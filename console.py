@@ -44,19 +44,19 @@ class HBNBCommand(cmd.Cmd):
             my_list = line.split(" ")
             obj = eval("{}()".format(my_list[0]))
             """ Update console def do_create """
-            arg_list = my_list[1:]
-            for i in arg_list:
+            param_list = my_list[1:]
+            for i in param_list:
                 if "=" in i:
-                    arg_split = i.split("=")
-                    if arg_split[1][0] == "\"":
-                        arg_split[1] = arg_split[1][1:-1]
-                        arg_split[1] = arg_split[1].replace(
+                    pmt_split = i.split("=")
+                    if pmt_split[1][0] == "\"":
+                        pmt_split[1] = pmt_split[1][1:-1]
+                        pmt_split[1] = pmt_split[1].replace(
                             '_', ' ').replace('"', '\\"')
-                    elif arg_split[1].isdigit():
-                        arg_split[1] = int(arg_split[1])
+                    elif pmt_split[1].isdigit():
+                        pmt_split[1] = int(pmt_split[1])
                     else:
-                        arg_split[1] = float(arg_split[1])
-                    setattr(obj, arg_split[0], arg_split[1])
+                        pmt_split[1] = float(pmt_split[1])
+                    setattr(obj, pmt_split[0], pmt_split[1])
             obj.save()
             """ Update console def do_create """
             print("{}".format(obj.id))
