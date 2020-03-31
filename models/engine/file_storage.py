@@ -25,7 +25,7 @@ class FileStorage:
         Return:
             returns a dictionary of __object
         """
-		new_dict = {}
+        new_dict = {}
         if cls is None:
             return self.__objects
 
@@ -64,13 +64,14 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
-	def delete(self, obj=None):
+    def delete(self, obj=None):
         """ delete an existing element
         """
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del self.__objects[key]
-	def close(self):
+
+    def close(self):
         """ calls reload()
         """
         self.reload()
