@@ -8,6 +8,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+import shlex
 
 
 class FileStorage:
@@ -20,20 +21,22 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """returns a dictionary
         Return:
             returns a dictionary of __object
         """
-        new_dict = {}
-        if cls is None:
+        dic = {}
+        if cls:
+            dictionary = self.__objects
+            for key in dictionary:
+                partition = key.replace('.', ' ')
+                partition = shlex.split(partition)
+                if (partition[0] == cls.__name__):
+                    dic[key] = self.__objects[key]
+            return (dic)
+        else:
             return self.__objects
-
-        for key in self.__objects.keys():
-            key_split = key.split('.')
-            if key_split[0] == cls.__name__:
-                new_dict[key] = self.__objects[key]
-        return self.__objects
 
     def new(self, obj):
         """sets __object to given obj
