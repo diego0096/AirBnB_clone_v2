@@ -25,6 +25,14 @@ class FileStorage:
         Return:
             returns a dictionary of __object
         """
+		new_dict = {}
+        if cls is None:
+            return self.__objects
+
+        for key in self.__objects.keys():
+            key_split = key.split('.')
+            if key_split[0] == cls.__name__:
+                new_dict[key] = self.__objects[key]
         return self.__objects
 
     def new(self, obj):
@@ -55,3 +63,14 @@ class FileStorage:
                     self.__objects[key] = value
         except FileNotFoundError:
             pass
+
+	def delete(self, obj=None):
+        """ delete an existing element
+        """
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            del self.__objects[key]
+	def close(self):
+        """ calls reload()
+        """
+        self.reload()
