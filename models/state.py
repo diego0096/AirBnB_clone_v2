@@ -12,7 +12,9 @@ class State(BaseModel, Base):
     Attributes:
         name: input name
     """
+    
     __tablename__ = 'states'
+
     name = Column(String(128), nullable=False)
 
     if os.getenv("HBNB_TYPE_STORAGE") == 'db':
@@ -22,10 +24,7 @@ class State(BaseModel, Base):
     def cities(self):
         """ Return cities instances """
         cities_instances = []
-        obj = models.storage.all()
-        for cls_name_id, cls_instance in obj.items():
-            cls_name = cls_name_id.split(".")[0]
-            if cls_name == "City":
-                if cls_instance.state_id == self.id:
-                    cities_instances.append(cls_instance)
+        for city in models.storage.all(City).values():
+            if self.id == city.state_id:
+                cities_instances.append(city)
         return cities_instances
