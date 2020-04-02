@@ -41,25 +41,22 @@ class HBNBCommand(cmd.Cmd):
         try:
             if not line:
                 raise SyntaxError()
-            my_list = line.split(" ")
-            obj = eval("{}()".format(my_list[0]))
-            """ Update console def do_create """
-            param_list = my_list[1:]
-            for i in param_list:
-                if "=" in i:
-                    pmt_split = i.split("=")
-                    if pmt_split[1][0] == "\"":
-                        pmt_split[1] = pmt_split[1][1:-1]
-                        pmt_split[1] = pmt_split[1].replace(
-                            '_', ' ').replace('"', '\\"')
-                    elif pmt_split[1].isdigit():
-                        pmt_split[1] = int(pmt_split[1])
-                    else:
-                        pmt_split[1] = float(pmt_split[1])
-                    setattr(obj, pmt_split[0], pmt_split[1])
-            obj.save()
-            """ Update console def do_create """
-            print("{}".format(obj.id))
+            param_list = split(line)
+            if len(param_list) >= 1:
+                obj = eval("{}()".format(param_list[0]))
+                for i in range(1, len(param_list)):
+                    pmt_split = param_list[i].split("=")
+                    if isinstance(pmt_split[1], str):
+                        pmt_split[1] = pmt_split[1].replace("_", " ")
+                    try:
+                        setattr(obj, pmt_split[0], eval(pmt_split[1]))
+                    except (SyntaxError, NameError):
+                        setattr(obj, pmt_split[0], pmt_split[1])
+                storage.new(obj)
+                storage.save()
+                print("{}".format(obj.id))
+            else:
+                raise SyntaxError()
         except SyntaxError:
             print("** class name missing **")
         except NameError:
