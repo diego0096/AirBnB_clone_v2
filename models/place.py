@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 """This is the place class"""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 import models
 from sqlalchemy import Table, Column, Integer, String, Float, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from os import environ
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """This is the class for Place
     Attributes:
         city_id: city id
@@ -34,3 +35,18 @@ class Place(BaseModel):
     latitude = Column(Float)
     longitude = Column(Float)
     amenity_ids = []
+
+    gbl_storage = environ.get('HBNB_TYPE_STORAGE')
+    if gbl_storage == 'db':
+        reviews = relationship('Review', backref='places', cascade='all, delete')
+
+    else:
+        @property
+        def reviews(self):
+            """Return all reviews related for a state"""
+            all_reviews = models.storage.all("Review")
+            own_reviews = []
+            for value in all_reviews.values():
+                if self.id == value.place_id:
+                    own_reviews.append(value)
+            return own_reviews
