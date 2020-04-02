@@ -50,8 +50,7 @@ class DBStorage():
 
     def new(self, obj):
         """ Add the object to the current database session """
-        if obj:
-            self.__session.add(obj)
+        self.__session.add(obj)
 
     def save(self):
         """ Commit all changes of the current database session """
@@ -59,8 +58,9 @@ class DBStorage():
 
     def delete(self, obj=None):
         """ Delete from the current database sessio """
-        if obj:
+        if obj is not None:
             self.__session.delete(obj)
+            self.save()
 
     def reload(self):
         """ Create all table of session """
