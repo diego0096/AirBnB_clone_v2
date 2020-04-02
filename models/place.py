@@ -7,6 +7,16 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from os import environ
 
+metadata = Base.metadata
+
+"""This is the association table between place and amenity """
+place_amenity = Table('place_amenity', metadata,
+Column('place_id', String(60), ForeignKey('places.id'),
+            primary_key=True, nullable=False),
+Column('amenity_id', String(69), ForeignKey('amenities.id'),
+            primary_key=True, nullable=False)
+    )
+
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -38,7 +48,11 @@ class Place(BaseModel, Base):
 
     gbl_storage = environ.get('HBNB_TYPE_STORAGE')
     if gbl_storage == 'db':
-        reviews = relationship('Review', backref='places', cascade='all, delete')
+        reviews = relationship('Review', backref='places',
+                                cascade='all, delete')
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 viewonly=False,
+                                 back_populates="place_amenities")
 
     else:
         @property
@@ -50,3 +64,14 @@ class Place(BaseModel, Base):
                 if self.id == value.place_id:
                     own_reviews.append(value)
             return own_reviews
+
+        @property
+        def amenities(self):
+            """ Returns list of amenity ids """
+            return self.amenity_ids
+
+        @amenities.setter
+        def amenities(self, obj=None):
+            """ Appends amenity ids to the attribute """
+            if type(obj) is Amenity and obj.id not in self.amenity_ids:
+                self.amenity_ids.append(obj.id)
