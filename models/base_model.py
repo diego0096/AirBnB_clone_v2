@@ -47,8 +47,11 @@ class BaseModel:
         Return:
             returns a string of class name, id, and dictionary
         """
+        my_dict = dict(self.__dict__)
+        if '_sa_instance_state' in my_dict.keys():
+            del my_dict['_sa_instance_state']
         return "[{}] ({}) {}".format(
-            type(self).__name__, self.id, self.__dict__)
+            type(self).__name__, self.id, my_dict)
 
     def __repr__(self):
         """return a string representaion
@@ -59,6 +62,8 @@ class BaseModel:
         """updates the public instance attribute updated_at to current
         """
         self.updated_at = datetime.now()
+        if not self.created_at:
+            self.created_at = self.updated_at
         models.storage.new(self)
         models.storage.save()
 
@@ -68,14 +73,10 @@ class BaseModel:
             returns a dictionary of all the key values in __dict__
         """
         my_dict = dict(self.__dict__)
-        if "_sa_instance_state" in my_dict.keys():
-            del my_dict["_sa_instance_state"]
         my_dict["__class__"] = str(type(self).__name__)
         my_dict["created_at"] = self.created_at.isoformat()
         my_dict["updated_at"] = self.updated_at.isoformat()
-
+        if "_sa_instance_state" in my_dict.keys():
+            del my_dict["_sa_instance_state"]
         return my_dict
 
-    def delete(self):
-        """ Delete instnaces """
-        models.storage.delete(self)
