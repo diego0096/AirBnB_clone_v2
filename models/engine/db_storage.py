@@ -33,7 +33,7 @@ class DBStorage():
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
-        """ Prints all the objects """
+        """ Returns a dictionary of __object """
 
         classes = ["State", "City", "User", "Place", "Review", "Amenity"]
         dict_return = {}
@@ -52,7 +52,7 @@ class DBStorage():
         return dict_return
 
     def new(self, obj):
-        """ Add the object to the current database session """
+        """ Add a new element to the current database session """
         self.__session.add(obj)
 
     def save(self):
