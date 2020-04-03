@@ -57,7 +57,7 @@ class Place(BaseModel, Base):
     else:
         @property
         def reviews(self):
-            """Return all reviews related for a state"""
+            """Return all the reviews that are related with a state"""
             all_reviews = models.storage.all("Review")
             own_reviews = []
             for value in all_reviews.values():
@@ -72,6 +72,6 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, obj=None):
-            """ Appends amenity ids to the attribute """
+            """ Appends amenity id's to an attribute """
             if type(obj) is Amenity and obj.id not in self.amenity_ids:
                 self.amenity_ids.append(obj.id)
