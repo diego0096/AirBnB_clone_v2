@@ -33,20 +33,23 @@ class DBStorage():
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
-        """ Return and show all class obj DBstorage """
-        my_dyct = {}
+        """ Prints all the objects """
+
+        classes = ["State", "City", "User", "Place", "Review", "Amenity"]
+        dict_return = {}
+
         if cls is None:
-            for table in [City, State, User, Place, Amenity, Review]:
-                for instance in self.__session.query(table).all():
-                    my_dyct["{}.{}".format(
-                       table, instance.id)] = instance
-
+            for table_name in classes:
+                for table in self.__session.query(eval(table_name)).all():
+                    info = type(table).__name__
+                    dict_return["{}.{}".format(info, table.id)] = table
         else:
-            for instance in self.__session.query(eval(cls)).all():
-                my_dyct["{}.{}".format(
-                    eval(cls).__name__, instance.id)] = instance
+            for table in self.__session.query(eval(cls)).all():
+                info = type(table).__name__
+                dict_return["{}.{}".format(info,
+                            table.id)] = table
 
-        return my_dyct
+        return dict_return
 
     def new(self, obj):
         """ Add the object to the current database session """
